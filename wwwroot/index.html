@@ -1,0 +1,183 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barbershop Customers</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Barbershop Customers</h1>
+        <div class="card mb-4">
+            <div class="card-header">
+                <h2>Add/Edit Customer</h2>
+            </div>
+            <div class="card-body">
+                <form id="addCustomerForm" novalidate>
+                    <input type="hidden" id="customerId" name="customerId">
+                    <div class="form-group">
+                        <label for="name">Name:</label>
+                        <input type="text" class="form-control" id="name" name="name" required pattern="[A-Za-z\s]+">
+                        <div class="invalid-feedback">Name can only contain letters.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phoneNumber">Phone Number:</label>
+                        <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" required pattern="[0-9]+">
+                        <div class="invalid-feedback">Phone Number can only contain numbers.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="reservationDate">Reservation Date:</label>
+                        <input type="datetime-local" class="form-control" id="reservationDate" name="reservationDate" required>
+                        <div class="invalid-feedback">Reservation must be on the hour and cannot overlap with another reservation.</div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h2>Customers</h2>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Id</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone Number</th>
+                            <th>Reservation Date</th>
+                            <th>Confirmed</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="customersTable">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            loadCustomers();
+
+            // Set datetime-local to only full hours
+            $("#reservationDate").on("input", function () {
+                let value = this.value;
+                const minutes = value.slice(14, 16);
+                if (minutes !== "00") {
+                    this.value = value.slice(0, 14) + "00" + value.slice(16);
+                }
+            });
+
+            $("#addCustomerForm").submit(function (event) {
+                event.preventDefault();
+                if (this.checkValidity() === false) {
+                    event.stopPropagation();
+                    $(this).addClass('was-validated');
+                    return;
+                }
+                const customerId = $("#customerId").val();
+                const customer = {
+                    id: customerId ? customerId : 0,
+                    name: $("#name").val(),
+                    email: $("#email").val(),
+                    phoneNumber: $("#phoneNumber").val(),
+                    reservationDate: $("#reservationDate").val(),
+                    isConfirmed: false
+                };
+
+                $.ajax({
+                    type: customerId ? "PUT" : "POST",
+                    url: customerId ? `/api/customers/${customerId}` : "/api/customers",
+                    data: JSON.stringify(customer),
+                    contentType: "application/json",
+                    success: function () {
+                        loadCustomers();
+                        $("#addCustomerForm")[0].reset();
+                        $("#customerId").val("");
+                        $("#addCustomerForm").removeClass('was-validated');
+                    },
+                    error: function (xhr) {
+                        if (xhr.status === 400) {
+                            alert(xhr.responseText);
+                        }
+                    }
+                });
+            });
+        });
+
+        function loadCustomers() {
+            $.getJSON("/api/customers", function (data) {
+                const customersTable = $("#customersTable");
+                customersTable.empty();
+                $.each(data, function (index, customer) {
+                    customersTable.append(`
+                            <tr>
+                                <td>${customer.id}</td>
+                                <td>${customer.name}</td>
+                                <td>${customer.email}</td>
+                                <td>${customer.phoneNumber}</td>
+                                <td>${new Date(customer.reservationDate).toLocaleString()}</td>
+                                <td>${customer.isConfirmed ? 'Yes' : 'No'}</td>
+                                <td>
+                                    <button class="btn btn-warning btn-sm" onclick="editCustomer(${customer.id})">Edit</button>
+                                    <button class="btn btn-danger btn-sm" onclick="deleteCustomer(${customer.id})">Delete</button>
+                                    ${customer.isConfirmed ? `<button class="btn btn-secondary btn-sm" onclick="unconfirmCustomer(${customer.id})">Unconfirm</button>` : `<button class="btn btn-success btn-sm" onclick="confirmCustomer(${customer.id})">Confirm</button>`}
+                                </td>
+                            </tr>
+                        `);
+                });
+            });
+        }
+
+        function editCustomer(id) {
+            $.getJSON(`/api/customers/${id}`, function (customer) {
+                $("#customerId").val(customer.id);
+                $("#name").val(customer.name);
+                $("#email").val(customer.email);
+                $("#phoneNumber").val(customer.phoneNumber);
+                $("#reservationDate").val(customer.reservationDate.slice(0, 16));
+            });
+        }
+
+        function deleteCustomer(id) {
+            $.ajax({
+                type: "DELETE",
+                url: `/api/customers/${id}`,
+                success: function () {
+                    loadCustomers();
+                }
+            });
+        }
+
+        function confirmCustomer(id) {
+            $.ajax({
+                type: "POST",
+                url: `/api/customers/confirm/${id}`,
+                success: function () {
+                    loadCustomers();
+                }
+            });
+        }
+
+        function unconfirmCustomer(id) {
+            $.ajax({
+                type: "POST",
+                url: `/api/customers/unconfirm/${id}`,
+                success: function () {
+                    loadCustomers();
+                }
+            });
+        }
+    </script>
+</body>
+</html>
