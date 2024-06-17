@@ -34,7 +34,7 @@
                     </div>
                     <div class="form-group">
                         <label for="reservationDate">Reservation Date:</label>
-                        <input type="datetime-local" class="form-control" id="reservationDate" name="reservationDate" required>
+                        <input type="datetime-local" class="form-control" id="reservationDate" name="reservationDate" required step="1800">
                         <div class="invalid-feedback">Reservation must be on the hour and cannot overlap with another reservation.</div>
                     </div>
                     <button type="submit" class="btn btn-primary">Save</button>
@@ -68,15 +68,6 @@
     <script>
         $(document).ready(function () {
             loadCustomers();
-
-            // Set datetime-local to only full hours
-            $("#reservationDate").on("input", function () {
-                let value = this.value;
-                const minutes = value.slice(14, 16);
-                if (minutes !== "00") {
-                    this.value = value.slice(0, 14) + "00" + value.slice(16);
-                }
-            });
 
             $("#addCustomerForm").submit(function (event) {
                 event.preventDefault();
@@ -121,20 +112,20 @@
                 customersTable.empty();
                 $.each(data, function (index, customer) {
                     customersTable.append(`
-                            <tr>
-                                <td>${customer.id}</td>
-                                <td>${customer.name}</td>
-                                <td>${customer.email}</td>
-                                <td>${customer.phoneNumber}</td>
-                                <td>${new Date(customer.reservationDate).toLocaleString()}</td>
-                                <td>${customer.isConfirmed ? 'Yes' : 'No'}</td>
-                                <td>
-                                    <button class="btn btn-warning btn-sm" onclick="editCustomer(${customer.id})">Edit</button>
-                                    <button class="btn btn-danger btn-sm" onclick="deleteCustomer(${customer.id})">Delete</button>
-                                    ${customer.isConfirmed ? `<button class="btn btn-secondary btn-sm" onclick="unconfirmCustomer(${customer.id})">Unconfirm</button>` : `<button class="btn btn-success btn-sm" onclick="confirmCustomer(${customer.id})">Confirm</button>`}
-                                </td>
-                            </tr>
-                        `);
+                                <tr>
+                                    <td>${customer.id}</td>
+                                    <td>${customer.name}</td>
+                                    <td>${customer.email}</td>
+                                    <td>${customer.phoneNumber}</td>
+                                    <td>${new Date(customer.reservationDate).toLocaleString()}</td>
+                                    <td>${customer.isConfirmed ? 'Yes' : 'No'}</td>
+                                    <td>
+                                        <button class="btn btn-warning btn-sm" onclick="editCustomer(${customer.id})">Edit</button>
+                                        <button class="btn btn-danger btn-sm" onclick="deleteCustomer(${customer.id})">Delete</button>
+                                        ${customer.isConfirmed ? `<button class="btn btn-secondary btn-sm" onclick="unconfirmCustomer(${customer.id})">Unconfirm</button>` : `<button class="btn btn-success btn-sm" onclick="confirmCustomer(${customer.id})">Confirm</button>`}
+                                    </td>
+                                </tr>
+                            `);
                 });
             });
         }
