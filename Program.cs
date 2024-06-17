@@ -12,21 +12,29 @@ builder.Services.AddDbContext<BarbershopContext>(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Additional services from Startup.ConfigureServices
+builder.Services.AddDbContext<BarbershopContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles(); // Dodanie obs³ugi plików statycznych
-
+app.UseStaticFiles(); // Obs³uga plików statycznych
+app.UseRouting();
 app.UseAuthorization();
 
-app.MapControllers();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});
 
 // Konfiguracja domyœlnej strony startowej
 app.MapFallbackToFile("index.html");

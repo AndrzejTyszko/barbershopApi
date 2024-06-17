@@ -2,6 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using BarbershopApi.Data;
 using BarbershopApi.Models;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace BarbershopApi.Controllers;
 
@@ -19,13 +22,13 @@ public class CustomersController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers()
     {
-        return await _context.Customers.ToListAsync();
+        return await _context.Customers.Include(c => c.Barber).ToListAsync();
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<Customer>> GetCustomer(int id)
     {
-        var customer = await _context.Customers.FindAsync(id);
+        var customer = await _context.Customers.Include(c => c.Barber).FirstOrDefaultAsync(c => c.Id == id);
 
         if (customer == null)
         {
@@ -113,10 +116,6 @@ public class CustomersController : ControllerBase
         return NoContent();
     }
 
-    private bool CustomerExists(int id)
-    {
-        return _context.Customers.Any(e => e.Id == id);
-    }
     [HttpPost("unconfirm/{id}")]
     public async Task<IActionResult> UnconfirmCustomer(int id)
     {
@@ -132,4 +131,8 @@ public class CustomersController : ControllerBase
         return NoContent();
     }
 
+    private bool CustomerExists(int id)
+    {
+        return _context.Customers.Any(e => e.Id == id);
+    }
 }

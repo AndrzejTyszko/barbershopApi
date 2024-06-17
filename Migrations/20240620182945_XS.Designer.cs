@@ -4,6 +4,7 @@ using BarbershopApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace barbershopApi.Migrations
 {
     [DbContext(typeof(BarbershopContext))]
-    partial class BarbershopContextModelSnapshot : ModelSnapshot
+    [Migration("20240620182945_XS")]
+    partial class XS
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,7 +42,7 @@ namespace barbershopApi.Migrations
                     b.ToTable("Barbers");
                 });
 
-            modelBuilder.Entity("BarbershopApi.Models.Customer", b =>
+            modelBuilder.Entity("Customer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -65,8 +68,7 @@ namespace barbershopApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("ReservationDate")
-                        .IsRequired()
+                    b.Property<DateTime>("ReservationDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
@@ -76,7 +78,7 @@ namespace barbershopApi.Migrations
                     b.ToTable("Customers");
                 });
 
-            modelBuilder.Entity("BarbershopApi.Models.Customer", b =>
+            modelBuilder.Entity("Customer", b =>
                 {
                     b.HasOne("BarbershopApi.Models.Barber", "Barber")
                         .WithMany()

@@ -4,3 +4,5 @@ GET {{barbershopApi_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
+GET {{barbershopApi_HostAddress}}/barbershopApi/
+Accept: application/json
