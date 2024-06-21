@@ -7,116 +7,117 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BarbershopApi.Controllers;
-
-[Route("api/[controller]")]
-[ApiController]
-public class BarbersController : ControllerBase
+namespace BarbershopApi.Controllers
 {
-    private readonly BarbershopContext _context;
-
-    public BarbersController(BarbershopContext context)
+    [Route("api/[controller]")]
+    [ApiController]
+    public class BarbersController : ControllerBase
     {
-        _context = context;
-    }
+        private readonly BarbershopContext _context;
 
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<Barber>>> GetBarbers()
-    {
-        return await _context.Barbers.ToListAsync();
-    }
-
-    [HttpGet("{id}")]
-    public async Task<ActionResult<Barber>> GetBarber(int id)
-    {
-        var barber = await _context.Barbers.FindAsync(id);
-
-        if (barber == null)
+        public BarbersController(BarbershopContext context)
         {
-            return NotFound();
+            _context = context;
         }
 
-        return barber;
-    }
-
-    [HttpPost]
-    public async Task<ActionResult<Barber>> PostBarber(Barber barber)
-    {
-        _context.Barbers.Add(barber);
-        await _context.SaveChangesAsync();
-
-        return CreatedAtAction(nameof(GetBarber), new { id = barber.Id }, barber);
-    }
-
-    [HttpPut("{id}")]
-    public async Task<IActionResult> PutBarber(int id, Barber barber)
-    {
-        if (id != barber.Id)
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Barber>>> GetBarbers()
         {
-            return BadRequest();
+            return await _context.Barbers.ToListAsync();
         }
 
-        _context.Entry(barber).State = EntityState.Modified;
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Barber>> GetBarber(int id)
+        {
+            var barber = await _context.Barbers.FindAsync(id);
 
-        try
-        {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!BarberExists(id))
+            if (barber == null)
             {
                 return NotFound();
             }
-            else
-            {
-                throw;
-            }
+
+            return barber;
         }
 
-        return NoContent();
-    }
-
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteBarber(int id)
-    {
-        var barber = await _context.Barbers.FindAsync(id);
-        if (barber == null)
+        [HttpPost]
+        public async Task<ActionResult<Barber>> PostBarber(Barber barber)
         {
-            return NotFound();
-        }
-
-        _context.Barbers.Remove(barber);
-        await _context.SaveChangesAsync();
-
-        return NoContent();
-    }
-
-    [HttpPost("import")]
-    public async Task<IActionResult> ImportBarbers(IFormFile file)
-    {
-        if (file == null || file.Length == 0)
-        {
-            return BadRequest("File is empty");
-        }
-
-        using (var stream = new StreamReader(file.OpenReadStream()))
-        {
-            string line;
-            while ((line = stream.ReadLine()) != null)
-            {
-                var values = line.Split(',');
-                var barber = new Barber { Name = values[0] };
-                _context.Barbers.Add(barber);
-            }
+            _context.Barbers.Add(barber);
             await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetBarber), new { id = barber.Id }, barber);
         }
 
-        return NoContent();
-    }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutBarber(int id, Barber barber)
+        {
+            if (id != barber.Id)
+            {
+                return BadRequest();
+            }
 
-    private bool BarberExists(int id)
-    {
-        return _context.Barbers.Any(e => e.Id == id);
+            _context.Entry(barber).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!BarberExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteBarber(int id)
+        {
+            var barber = await _context.Barbers.FindAsync(id);
+            if (barber == null)
+            {
+                return NotFound();
+            }
+
+            _context.Barbers.Remove(barber);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        [HttpPost("import")]
+        public async Task<IActionResult> ImportBarbers(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("Plik jest pusty");
+            }
+
+            using (var stream = new StreamReader(file.OpenReadStream()))
+            {
+                string line;
+                while ((line = stream.ReadLine()) != null)
+                {
+                    var values = line.Split(',');
+                    var barber = new Barber { Name = values[0] };
+                    _context.Barbers.Add(barber);
+                }
+                await _context.SaveChangesAsync();
+            }
+
+            return NoContent();
+        }
+
+        private bool BarberExists(int id)
+        {
+            return _context.Barbers.Any(e => e.Id == id);
+        }
     }
 }
