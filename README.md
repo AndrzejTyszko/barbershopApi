@@ -44,7 +44,7 @@ Run the migrations to set up the database schema:
 bash
 Skopiuj kod
 
-``dotnet ef database update``
+```dotnet ef database update```
 Start the application:
 
 bash
