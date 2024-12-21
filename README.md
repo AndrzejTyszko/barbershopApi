@@ -32,18 +32,18 @@ Welcome to the **Barbershop API** repository! This project is a backend API desi
    cd barbershopApi
 
    
- 🌟 Key Features in Development
-   💳 Payment Integration: Enable online payment for bookings.
-   📱 Notifications: Send SMS or email reminders to customers.
-   📊 Advanced Analytics: Track revenue, customer trends, and employee performance.
+ ## 🌟 Key Features in Development
+ -   💳 Payment Integration: Enable online payment for bookings.
+ -   📱 Notifications: Send SMS or email reminders to customers.
+ -   📊 Advanced Analytics: Track revenue, customer trends, and employee performance.
    
-👩‍💻 Contributing
+## 👩‍💻 Contributing
    Contributions are welcome! Here’s how you can help:
 
-📝 License
+## 📝 License
    This project is licensed under the MIT License. See the LICENSE file for details.
 
-📫 Contact
+## 📫 Contact
    If you have questions or suggestions, feel free to reach out:
 
 
