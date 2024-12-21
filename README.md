@@ -30,6 +30,8 @@ Welcome to the **Barbershop API** repository! This project is a backend API desi
    ```bash
    git clone https://github.com/AndrzejTyszko/barbershopApi.git
    cd barbershopApi
+
+   
 Install dependencies:
 
 bash
@@ -41,6 +43,7 @@ Run the migrations to set up the database schema:
 
 bash
 Skopiuj kod
+
 dotnet ef database update
 Start the application:
 
@@ -62,9 +65,11 @@ POST /api/services – Add a new service
 PUT /api/services/{id} – Update service details
 DELETE /api/services/{id} – Delete a service
 Customers
+
 GET /api/customers – List all customers
 POST /api/customers – Add a new customer
 GET /api/customers/{id} – Retrieve a customer by ID
+
 🌟 Key Features in Development
 💳 Payment Integration: Enable online payment for bookings.
 📱 Notifications: Send SMS or email reminders to customers.
