@@ -36,39 +36,39 @@ Install dependencies:
 
 bash
 Skopiuj kod
-dotnet restore
-Update appsettings.json with your database connection string and other configurations.
+```dotnet restore```
+``Update appsettings.json`` with your database connection string and other configurations.
 
 Run the migrations to set up the database schema:
 
 bash
 Skopiuj kod
 
-dotnet ef database update
+``dotnet ef database update``
 Start the application:
 
 bash
 Skopiuj kod
-dotnet run
+``dotnet run``
 🔍 API Endpoints
 Authentication
-POST /api/auth/register – Register a new user
-POST /api/auth/login – Log in and get a JWT token
+``POST /api/auth/register – Register a new user``
+``POST /api/auth/login – Log in and get a JWT token``
 Appointments
-GET /api/appointments – Retrieve all appointments
-POST /api/appointments – Create a new appointment
-PUT /api/appointments/{id} – Update an appointment
-DELETE /api/appointments/{id} – Delete an appointment
+``GET /api/appointments`` – Retrieve all appointments
+``POST /api/appointments`` – Create a new appointment
+``PUT /api/appointments/{id}`` – Update an appointment
+``DELETE /api/appointments/{id}`` – Delete an appointment
 Services
-GET /api/services – Retrieve all services
-POST /api/services – Add a new service
-PUT /api/services/{id} – Update service details
-DELETE /api/services/{id} – Delete a service
+``GET /api/services`` – Retrieve all services
+``POST /api/services`` – Add a new service
+``PUT /api/services/{id}`` – Update service details
+``DELETE /api/services/{id}`` – Delete a service
 Customers
 
-GET /api/customers – List all customers
-POST /api/customers – Add a new customer
-GET /api/customers/{id} – Retrieve a customer by ID
+``GET /api/customers`` – List all customers
+``POST /api/customers`` – Add a new customer
+``GET /api/customers/{id}`` – Retrieve a customer by ID
 
 🌟 Key Features in Development
 💳 Payment Integration: Enable online payment for bookings.
@@ -81,15 +81,15 @@ Fork the repository.
 Create a new branch:
 bash
 Skopiuj kod
-git checkout -b feature-name
+``git checkout -b feature-name``
 Commit your changes:
 bash
 Skopiuj kod
-git commit -m "Add feature-name"
+``git commit -m "Add feature-name"``
 Push your branch:
 bash
 Skopiuj kod
-git push origin feature-name
+``git push origin feature-name``
 Open a pull request!
 📝 License
 This project is licensed under the MIT License. See the LICENSE file for details.
